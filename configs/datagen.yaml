@@ -1,0 +1,119 @@
+# Settings of the automatic generator (nwaves-generate). Copy this file, change it, and pass your copy with
+#   nwaves-generate --config configs/my.yaml
+# nwaves-view --config configs/my.yaml shows what the "randomization" section really does to the scene.
+# The same "randomization" section also draws the scenes of nwaves-teleop and nwaves-mimic.
+#
+# READ THIS FIRST. This file works as it is, and the data it makes is not enough. On purpose:
+#   - the cube and the tray hardly move, the tray always stands square to the arm, and the cube is always orange;
+#   - the workspace always looks the same: a black arm, one wooden table top, white walls;
+#   - light, camera position, friction, mass and motor strength do not change at all: those entries are
+#     switched off below (the lines that start with "# off:");
+#   - the arm always moves in exactly the same way.
+# A policy trained on this data alone will not pass the official evaluation: the scorer draws every episode from
+# much wider ranges (OFFICIAL_RANDOMIZATION in nwaves_hackathon/layout.py: any bright cube colour, larger regions,
+# a turned tray, other table tops, wall and arm colours, changing light and camera, changing physics), and the real
+# arm differs from the simulation again.
+# Widening the ranges, switching the missing kinds of variety on, and checking that the generator still
+# succeeds is your job. So is deciding what else your data needs.
+#
+# Positions are in metres, in the arm's frame: x forward from the base, y to the arm's left, the table at z = 0.
+
+episodes: 50          # successful episodes to keep (failed ones are thrown away and replaced)
+seed: 1               # same seed and same settings = same scenes
+envs: 4               # scenes simulated side by side; more scenes generate faster
+
+# ---------------------------------------------------------------------------------------------------------
+# What changes from episode to episode. [low, high] = drawn evenly between the two; one number = fixed.
+# An entry that is missing or commented out does not vary.
+randomization:
+  # The cube. The arm picks it up well between 0.15 and 0.27 m from its base; keep it on the right half
+  # (y below about -0.05), where the scene camera sees it from the start.
+  cube_x: [0.16, 0.18]
+  cube_y: [-0.135, -0.115]
+  cube_yaw_deg: [-10, 10]           # rotation about the vertical; a cube looks the same every 90 deg
+
+  # Cube colour: a list of names (red, blue, green, yellow, orange, purple, pink, cyan, white, black) and/or
+  # [r, g, b] values between 0 and 1; one is picked per episode. Or one of three words instead of a list:
+  #   bright   a random bright colour every episode; in about 3 episodes of 10 it is the orange of the real cube
+  #   any      the same, and black or nearly black in about 3 episodes of 10
+  #   black    always black
+  # The official scorer uses  bright.
+  cube_colors: [orange]
+  # off: cube_color_jitter: 0.0     # +- on each colour channel around the picked colour (not used with "any")
+
+  # The tray (its centre). The arm sets a cube down well between 0.15 and 0.27 m from its base. The cube never
+  # starts in the tray or close to it: the gripper needs room to come down beside the tray's walls. Their centres
+  # are at least 10.5 cm apart (MIN_CUBE_TRAY in layout.py); ranges that leave no such place are refused.
+  tray_x: [0.22, 0.23]
+  tray_y: [0.02, 0.03]
+  # off: tray_yaw_deg: [0, 0]       # rotation of the tray about the vertical (0 = square to the arm)
+
+  # The look of the workspace: switched off (the black arm, the wooden table top and the white walls of the real
+  # workspace in every episode). What can change:
+  #   surface       what the cube and the tray stand on, a list; one is picked per episode:
+  #                   wood        the light wooden table top
+  #                   wood_any    the wooden top with another brightness and tint
+  #                   plain_any   a plain top without grain, in a random light colour
+  #                   grey        the bare grey floor of the enclosure
+  #                   mat         the dark mat on that floor
+  #                   or a colour name or [r, g, b] for a plain top in that colour
+  #                 Naming one twice makes it twice as likely.
+  #   wall_colors   colour of the walls: a list of names and/or [r, g, b], or  any  (white to grey);  as_built  is
+  #                 the grey sheet metal of the enclosure model
+  #   arm_colors    colour of the arm's printed parts: a list of names and/or [r, g, b], or  any  (between black and
+  #                 yellow, dark more often);  as_built  is the yellow of the arm model
+  #   mat_colors    colours of the mat in the episodes that have it
+  #   look          one word for a whole look:  real  (the default) or  classic  (the scene of the earlier versions:
+  #                 yellow arm, grey enclosure, dark mat). It sets surface, wall_colors and arm_colors where you
+  #                 do not give them yourself.
+  # The official scorer uses surface [wood, wood_any, wood_any, wood_any, plain_any, plain_any, grey, mat],
+  # wall_colors any and arm_colors any.
+  # off: surface: [wood]
+  # off: wall_colors: [white]
+  # off: arm_colors: [black]
+
+  # Light: switched off (nominal light in every episode). Intensity is a scale on the brightness of the roof
+  # strips, the dome and the key light (1 = nominal). Temperature is the colour of the roof strips in kelvin
+  # (4800 = nominal neutral white, lower = more orange, higher = more blue).
+  # off: light_intensity: [1.0, 1.0]
+  # off: light_temperature: [4800, 4800]
+
+  # Scene camera: switched off (the camera sits exactly at its mount). The real camera never does. Jitter is
+  # +- metres on each axis (at most 0.03) and +- degrees about each axis.
+  # off: camera_pos_jitter: 0.0
+  # off: camera_rot_jitter_deg: 0.0
+
+  # Physics: switched off (the same cube and the same motors in every episode). Friction of the cube
+  # (1.0 = nominal), scale on its mass (1.0 = CUBE_MASS in layout.py), scale on the servos' position gain
+  # and damping (1.0 = the simulated servo as it is).
+  # off: cube_friction: [1.0, 1.0]
+  # off: cube_mass_scale: [1.0, 1.0]
+  # off: motor_stiffness_scale: [1.0, 1.0]
+  # off: motor_damping_scale: [1.0, 1.0]
+
+# ---------------------------------------------------------------------------------------------------------
+# How the scripted arm moves. One episode: open the jaw, hover over the cube, go down, close, lift, carry over
+# the tray's wall, lower the cube into the pocket, let go, back up, home. A length or a time may also be given as
+# [low, high]: it is then drawn anew for every episode. As shipped, every episode moves in the same way: the
+# entries at 0 are the variety that is switched off.
+behavior:
+  speed: 1.0                 # 1 = normal pace (an episode takes about 10 s); 0.5 = every move takes twice as long.
+                             # Joint targets are speed limited like on the real arm, whatever you set here.
+  speed_jitter: 0.0          # off. +- fraction of the speed, drawn once per episode (0.2 = 20 % faster or slower)
+  approach_height: 0.07      # m above the cube where the gripper stops before it goes down
+  grasp_depth: 0.008         # m: height of the fingertip above the cube's centre when the jaw closes. The jaws
+                             # hold the cube by its upper half, so their tips stay 4 mm above the tray's walls
+                             # when the cube is set down (with less than about 0.004 they reach below the walls'
+                             # top and can touch them)
+  grasp_along: -0.012        # m: fingertip shift along the jaw's closing direction; -0.012 puts the cube in the
+                             # middle of the jaw (it still lifts between -0.020 and 0.0)
+  grasp_offset_noise: 0.0    # off. m: random error of the grasp point, +- in both horizontal directions
+  carry_clearance: 0.02      # m between the cube's underside and the top of the tray's walls while it is carried
+  release_height: 0.003      # m between the cube's underside and the pocket's floor when the jaw opens: the cube
+                             # is set down, not dropped
+  place_offset_noise: 0.0    # off. m: random offset of the place point from the tray's centre, +- in x and y
+  pause: [0.0, 0.0]          # off. s: a random wait before each step of the episode
+  action_noise: 0.0          # off. m: random wobble of the commanded fingertip position (0.002 is already visible)
+  retries: 1                 # how often the grasp is tried again when the cube was not lifted
+  return_home: true          # glide back to the home pose after letting go
+  end_hold: 0.3              # s of standing still recorded at the end of the episode

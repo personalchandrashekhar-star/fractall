@@ -1,0 +1,161 @@
+#usda 1.0
+(
+    defaultPrim = "WorkspaceBox"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "WorkspaceBox" (
+    prepend references = @./box.usdz@
+)
+{
+    over "box"
+    {
+        over "Base_08q"
+        {
+            over "tn__131_m6"
+            {
+                over "tn__131_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__132_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__133_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__134_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__135_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__136_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__137_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__138_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__139_b3h0B" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__1310_c4p0D" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__1311_c4p0D" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__1312_c4p0D" (
+                    active = false
+                )
+                {
+                }
+
+                over "tn__13_"
+                {
+                    over "Mesh" (
+                        prepend apiSchemas = ["PhysicsCollisionAPI", "PhysicsMeshCollisionAPI"]
+                    )
+                    {
+                        uniform token physics:approximation = "none"
+                    }
+                }
+            }
+        }
+
+        over "DiskLight" (
+            active = false
+        )
+        {
+        }
+    }
+
+    def Mesh "NWavesLogo" (
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        uniform bool doubleSided = 0
+        int[] faceVertexCounts = [4]
+        int[] faceVertexIndices = [0, 1, 2, 3]
+        rel material:binding = </WorkspaceBox/Looks/NWavesLogo>
+        normal3f[] normals = [(0, 0.70710677, 0.70710677), (0, 0.70710677, 0.70710677), (0, 0.70710677, 0.70710677), (0, 0.70710677, 0.70710677)] (
+            interpolation = "vertex"
+        )
+        point3f[] points = [(0.1, 0.54515487, 1.0797765), (-0.1, 0.54515487, 1.0797765), (-0.1, 0.5179765, 1.1069548), (0.1, 0.5179765, 1.1069548)]
+        texCoord2f[] primvars:st = [(0, 0), (1, 0), (1, 1), (0, 1)] (
+            interpolation = "vertex"
+        )
+    }
+
+    over "Looks"
+    {
+        def Material "NWavesLogo"
+        {
+            token outputs:surface.connect = </WorkspaceBox/Looks/NWavesLogo/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor.connect = </WorkspaceBox/Looks/NWavesLogo/Texture.outputs:rgb>
+                float inputs:opacity.connect = </WorkspaceBox/Looks/NWavesLogo/Texture.outputs:a>
+                float inputs:opacityThreshold = 0.4
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+
+            def Shader "Texture"
+            {
+                uniform token info:id = "UsdUVTexture"
+                asset inputs:file = @./nwaves_logo.png@
+                token inputs:sourceColorSpace = "sRGB"
+                float2 inputs:st.connect = </WorkspaceBox/Looks/NWavesLogo/ST.outputs:result>
+                float outputs:a
+                color3f outputs:rgb
+            }
+
+            def Shader "ST"
+            {
+                uniform token info:id = "UsdPrimvarReader_float2"
+                token inputs:varname = "st"
+                float2 outputs:result
+            }
+        }
+    }
+}
+

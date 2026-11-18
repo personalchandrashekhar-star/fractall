@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Team Fractal — SO-101 Sim-to-Real Prototype Summary</title>
+<style>
+  @page { size: A4; margin: 13mm; }
+  * { box-sizing: border-box; }
+  html, body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #111111;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 8.5pt;
+    line-height: 1.28;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 7.6pt;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #444444;
+    border-bottom: 0.75px solid #111111;
+    padding-bottom: 4px;
+    margin-bottom: 7px;
+  }
+  .masthead {
+    text-align: center;
+    margin-bottom: 7px;
+  }
+  .masthead h1 {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 21pt;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 2px 0 3px 0;
+    color: #000000;
+    line-height: 1.05;
+  }
+  .masthead .kicker {
+    font-size: 8.3pt;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #333333;
+    margin-bottom: 5px;
+  }
+  .framed-deck {
+    border: 1px solid #222222;
+    padding: 5px 12px;
+    margin: 0 auto 9px auto;
+    max-width: 96%;
+    text-align: center;
+    font-size: 8.2pt;
+    line-height: 1.32;
+    color: #111111;
+  }
+  .proto-pill {
+    display: inline-block;
+    background: #111111;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 7.2pt;
+    padding: 1.5px 7px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: stretch;
+  }
+  .hero-photo-wrap {
+    position: relative;
+    border: 0.75px solid #222222;
+    overflow: hidden;
+    height: 132px;
+    background: #000;
+  }
+  .hero-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 52%;
+    display: block;
+  }
+  .photo-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(17, 17, 17, 0.78);
+    color: #ffffff;
+    font-size: 7pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3.5px 8px;
+    text-align: center;
+  }
+  .spec-frame {
+    border: 0.75px solid #222222;
+    padding: 6px 9px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fafafa;
+  }
+  .spec-frame .spec-title {
+    font-size: 7.8pt;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 0.75px solid #222222;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+  }
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.9pt;
+    border-bottom: 0.5px dotted #cccccc;
+    padding: 2px 0;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-label { color: #444444; font-weight: 500; }
+  .spec-val { color: #000000; font-weight: 700; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 7px;
+  }
+  .section-head {
+    font-size: 8.9pt;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1.2px solid #111111;
+    padding-bottom: 2px;
+    margin: 0 0 5px 0;
+  }
+  p { margin: 0 0 5px 0; text-align: justify; }
+  ul, ol { margin: 0 0 5px 15px; padding: 0; }
+  li { margin-bottom: 3.5px; text-align: justify; }
+  code {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    font-size: 8.1pt;
+    background: #f0f0f0;
+    padding: 0.5px 4px;
+  }
+  .score-section {
+    border-top: 1.5px solid #111111;
+    padding-top: 6px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+    font-size: 8.5pt;
+  }
+  th, td {
+    border: 0.75px solid #222222;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  th {
+    background: #111111;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 7.5pt;
+  }
+  .pen-box {
+    display: inline-block;
+    min-width: 115px;
+    border: 1px solid #111111;
+    background: #ffffff;
+    padding: 2px 6px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 8.8pt;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .footer-bar {
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 0.75px solid #111111;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.2pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #444444;
+  }
+</style>
+</head>
+<body>
+
+  <div class="meta-bar">
+    <span>Stage 2 Finalist Dossier &bull; 18 November 2026</span>
+    <span>Bharat1.ai &times; NWaves Buildathon &bull; BIEC Bengaluru</span>
+  </div>
+
+  <div class="masthead">
+    <h1>TEAM FRACTAL</h1>
+    <div class="kicker">Chandrashekhar Paliwal &amp; Pratham &mdash; SO-101 Sim-to-Real Prototype Summary</div>
+  </div>
+
+  <div class="framed-deck">
+    <span class="proto-pill">Prototype</span>
+    <strong>Explicit System Attribution:</strong> This research &amp; engineering <strong>Prototype</strong> is built on and credits
+    <strong>Hugging Face LeRobot 0.4.4</strong> (ACT policy &amp; normalizer pipeline),
+    <strong>NVIDIA Isaac Lab</strong> (600-episode USD domain-randomized simulation data engine), and the
+    <strong>NWaves Platform</strong> (<code>nwaves-train</code>, <code>nwaves-eval</code>, <code>nwaves-realdata</code>, and <strong>My Robot</strong> deployment).
+  </div>
+
+  <div class="hero-grid">
+    <div class="hero-photo-wrap">
+      <img src="biec_so101_real.jpg" alt="Physical SO-101 Follower Arm with Wrist UVC Camera & Orange Cube at BIEC Bengaluru">
+      <div class="photo-caption">Physical SO-101 Follower Arm &bull; Wrist UVC Camera &amp; Target Cube/Tray Setup at BIEC Bengaluru</div>
+    </div>
+    <div class="spec-frame">
+      <div class="spec-title">System &amp; Benchmark Profile</div>
+      <div class="spec-row"><span class="spec-label">Designation</span><span class="spec-val">Prototype (ACT v0.4.4)</span></div>
+      <div class="spec-row"><span class="spec-label">Control Rate</span><span class="spec-val">30 Hz (&lt; 33 ms / step)</span></div>
+      <div class="spec-row"><span class="spec-label">Actuators</span><span class="spec-val">6&times; Feetech STS3215</span></div>
+      <div class="spec-row"><span class="spec-label">Vision Sensors</span><span class="spec-val">0.52 m Shoulder + Wrist UVC</span></div>
+      <div class="spec-row"><span class="spec-label">Isaac Lab Data Engine</span><span class="spec-val">600 Curated Episodes</span></div>
+      <div class="spec-row"><span class="spec-label">Stage-1 Sim Seed</span><span class="spec-val">#1 (10 / 10 &bull; 5.8 s)</span></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h2 class="section-head">01 / Problem Statement</h2>
+      <p>
+        Bridging zero-shot and few-shot <strong>30 Hz (&lt; 33 ms/step)</strong> RGB-only Action Chunking with Transformers (<code>ACT</code>, <code>lerobot==0.4.4</code>) manipulation from <strong>NVIDIA Isaac Lab</strong> to physical <strong>Feetech STS3215</strong> servos across:
+      </p>
+      <ul>
+        <li><strong>Multi-Colour &amp; Pose Generalization:</strong> Picking arbitrary bright cube colours across randomized table placements and moved tray locations without depth sensors.</li>
+        <li><strong>0.52 m Shoulder + Wrist UVC Tolerances:</strong> Coping with hand-mounted shoulder camera extrinsics, wrist-camera optics, and millimetre-level table/tray offsets.</li>
+        <li><strong>Preventing Catastrophic Forgetting:</strong> Adapting to live BIEC demonstrations without erasing Stage-1 multi-colour visual representations.</li>
+      </ul>
+
+      <h2 class="section-head" style="margin-top:7px;">04 / Honest Prototype Limits</h2>
+      <ol>
+        <li><strong>RGB Depth Sensitivity (&gt; 1 cm Shift):</strong> Monocular RGB depth inference from the <code>0.52 m</code> scene camera degrades if the camera mount shifts &gt; 1 cm before wrist-camera acquisition.</li>
+        <li><strong>STS3215 Gear Play &amp; Thermal Stop (&gt; 60&deg;C):</strong> ~1.2&deg; servo gear play and &gt; 60&deg;C thermal protection require non-snapping gripper limits and brief cooling intervals.</li>
+        <li><strong>Hall Spotlight Exposure Shifts:</strong> Direct BIEC hall spotlights over glossy PLA facets and white tabletop surfaces induce UVC auto-exposure shifts across attempts.</li>
+      </ol>
+    </div>
+
+    <div>
+      <h2 class="section-head">02 / Approach: Data Engine &amp; Sim-to-Real</h2>
+      <ul>
+        <li><strong>NVIDIA Isaac Lab Data Engine (600 Episodes):</strong> Curated 600 trajectory-shaped simulation episodes enforcing strict <strong>24&ndash;32 mm tray wall clearance</strong>, multi-colour randomization, and zero hover hesitation &mdash; achieving the <strong>#1 Stage-1 Simulation Seed (10 / 10, 5.8 s mean time)</strong>.</li>
+        <li><strong>Forgetting-Safe Sim + Real Co-Training:</strong> Co-trained Stage-1 simulation data + <code>ArunMurugesan/real_pickplace_v4</code> + live BIEC <strong>My Robot</strong> recordings (<code>--from</code> Stage-1 run, <code>batch_size &le; 16</code>), verified with <code>nwaves-eval</code> in simulation before <code>nwaves-submit</code> so unseen cube colours and poses are retained.</li>
+        <li><strong>Per-Attempt Risk Allocation (Section 11):</strong> Leveraged Section 11 per-attempt policy selection (<strong>3-pt zero-shot sim policy</strong> on high-confidence center placements vs <strong>2-pt co-trained policy</strong> on harder edge/moved-tray placements) under Route B safety limits (dry-run + 40%&rarr;100% speed + calibrated joint travel).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="score-section">
+    <h2 class="section-head">03 / Evaluation Results &amp; Live BIEC Scorecard (15:45 IST Hand-In)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:52%;">Evaluation Category</th>
+          <th style="width:26%;">Makes / Attempts</th>
+          <th style="width:22%;">Mean Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Stage-1 Simulation Seed</strong> (<code>nwaves-eval</code> / Official Leaderboard)</td>
+          <td><strong>10 / 10</strong> &nbsp;<em>(#1 Seed Rank)</em></td>
+          <td><strong>5.8 s</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Real-Arm 3-Point (Zero-Shot Sim Policy) Makes</strong></td>
+          <td><span class="pen-box">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+          <td><span class="pen-box">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp; s</span></td>
+        </tr>
+        <tr>
+          <td><strong>Real-Arm 2-Point (Sim + Real Co-Trained) Makes</strong></td>
+          <td><span class="pen-box">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+          <td><span class="pen-box">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp; s</span></td>
+        </tr>
+        <tr>
+          <td><strong>Total Real-Arm Score &amp; Overall Mean Time</strong></td>
+          <td><span class="pen-box">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pts</span></td>
+          <td><span class="pen-box">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp; s</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-bar">
+    <span>Team Fractal &bull; Prototype Submission</span>
+    <span>Award Tracks: Best Data Engine &bull; Best Sim-to-Real &bull; Best Use of NVIDIA Isaac Lab</span>
+  </div>
+
+</body>
+</html>

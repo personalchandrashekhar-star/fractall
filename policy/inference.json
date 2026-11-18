@@ -1,0 +1,6 @@
+{
+  "n_action_steps": 25,
+  "gripper_min": 6.0,
+  "gripper_max": 58.0,
+  "snap_gripper": false
+}
